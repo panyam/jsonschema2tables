@@ -1,0 +1,68 @@
+{
+  "$id": "https://example.com/person.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Department",
+  "type": "object",
+  "properties": {
+    "deptId": {
+      "type": "int",
+      "description": "The dept's id"
+    },
+    "deptName": {
+      "type": "string",
+      "description": "The Dept's last name."
+    },
+    "location": {
+      "description": "Location/Address",
+      "type": "string"
+    },
+    "employees": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Employee" }
+    }
+  },
+  "$defs": {
+    "Employee": {
+      "type": "object",
+      "required": [ "employeeName", "employeeId" ],
+      "properties": {
+        "employeeName": {
+          "type": "string",
+          "description": "The name of the vegetable."
+        },
+        "dob": {
+          "type": "date",
+          "description": "Do I like this vegetable?"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Child" }
+        },
+        "employeeId": {
+          "type": "number",
+          "description": "Do I like this vegetable?"
+        }
+      },
+      "$defs": {
+        "Child": {
+          "type": "object",
+          "required": [ "childName", "childId" ],
+          "properties": {
+            "childName": {
+              "type": "string",
+              "description": "The name of the vegetable."
+            },
+            "dob": {
+              "type": "date",
+              "description": "Do I like this vegetable?"
+            },
+            "childId": {
+              "type": "number",
+              "description": "Do I like this vegetable?"
+            }
+          }
+        }
+      }
+    }
+  }
+}

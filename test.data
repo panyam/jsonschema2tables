@@ -1,0 +1,75 @@
+{
+  "Departments": [{
+      "deptId": 1, "deptName": "Accounting", "location": "SFO",
+      "employees": [
+      {
+        "employeeId": 100,
+        "dob": "JAN 1 1990",
+        "children": [
+          {
+            "childId": 1000,
+            "childName": "Maya",
+            "dob": "Feb 1 1990"
+          },
+          {
+            "childId": 2000,
+            "childName": "Chaya",
+            "dob": "Feb 2 1990"
+          }
+        ]
+      },
+      {
+        "employeeId": 200,
+        "dob": "Jan 2 1990",
+        "children": [
+          {
+            "childId": 3000,
+            "childName": "Sushi1",
+            "dob": "Feb 2 1990"
+          },
+          {
+            "childId": 4000,
+            "childName": "Sushi2",
+            "dob": "Feb 3 1990"
+          }
+        ]
+      }
+    ]
+  }, {
+      "deptId": 2, "deptName": "Finance", "location": "NY",
+      "employees": [
+      {
+        "employeeId": 300,
+        "dob": "Jan 3 1990",
+        "children": [
+          {
+            "childId": 5000,
+            "childName": "Medha",
+            "dob": "Feb 5 1990"
+          },
+          {
+            "childId": 6000,
+            "childName": "Nidhi",
+            "dob": "Feb 6 1990"
+          }
+        ]
+      },
+      {
+        "employeeId": 400,
+        "dob": "Jan 4 1990",
+        "children": [
+          {
+            "childId": 7000,
+            "childName": "Anika",
+            "dob": "Feb 7 1990"
+          },
+          {
+            "childId": 8000,
+            "childName": "Arnav",
+            "dob": "Feb 8 1990"
+          }
+        ]
+      }
+    ]
+  }]
+}
