@@ -6,7 +6,8 @@
   "properties": {
     "deptId": {
       "type": "int",
-      "description": "The dept's id"
+      "description": "The dept's id",
+      "primaryKey": true
     },
     "deptName": {
       "type": "string",

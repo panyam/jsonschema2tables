@@ -16,6 +16,7 @@ class Field(object):
         self.name = name
         self.fieldtype = None
         self.description = ""
+        self.primary_key = False
 
 class Table(object):
     fields: List[Field] = []
@@ -70,9 +71,36 @@ class SchemaLib(object):
         return table;
 
     def process_field(self, table: Table, name: str, fieldData):
+        fieldtype = fieldData.get("type", "")
+        if fieldtype == "array":
+            itemtype = (fieldData["items"] or {})["$ref"] or None
+            # assert itemtype is not None, "$ref not found in array type"
+            return
         field = table.add_field(name)
         field.description = fieldData.get("description", "")
-        field.fieldtype = fieldData.get("type", "")
-        if field.fieldtype == "array":
-            itemtype = (fieldData["items"] or {})["$ref"] or None
-            assert itemtype is not None, "$ref not found in array type"
+        field.primary_key = fieldData.get("primaryKey", False)
+        field.fieldtype = fieldtype
+
+    def gen_ddl(self, table: Table) -> str: 
+        table_name = ""
+        curr = table
+        while curr:
+            if table_name: table_name = curr.name + "_" + table_name 
+            else: table_name = curr.name
+            curr = curr.parent
+        def field_desc(field: Field) -> str:
+            out = field.name
+            if field.fieldtype == "int":
+                out += " NUMBER(10) "
+            elif field.fieldtype == "string":
+                out += " VARCHAR(4000) "
+            elif field.fieldtype == "date":
+                out += " DATE "
+            if field.primary_key:
+                out += f"PRIMARY KEY {table.name}_pk"
+            return out
+        field_descriptors = list(map(field_desc, table.fields))
+
+        return f"""
+        CREATE TABLE {table_name} ( { ", ".join(field_descriptors) } )
+        """
