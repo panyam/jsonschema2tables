@@ -41,7 +41,8 @@
         },
         "employeeId": {
           "type": "number",
-          "description": "Do I like this vegetable?"
+          "description": "Do I like this vegetable?",
+          "primaryKey": true
         }
       },
       "$defs": {
@@ -59,7 +60,8 @@
             },
             "childId": {
               "type": "number",
-              "description": "Do I like this vegetable?"
+              "description": "Do I like this vegetable?",
+              "primaryKey": true
             }
           }
         }

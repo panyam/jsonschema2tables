@@ -1,12 +1,4 @@
 
-
-"""
-CREATE TABLE Dept ( deptId number PRIMARY KEY, deptName VARCHAR(4000), location VARCHAR(4000));
-
-CREATE TABLE Employee (employeeId number PRIMARY KEY, deptId number REFERENCES Dept (deptId), dob date, employeeName VARCHAR(4000));
-
-"""
-
 from typing import List
 from ipdb import set_trace
 import json
@@ -18,12 +10,39 @@ class Field(object):
         self.description = ""
         self.primary_key = False
 
+    @property
+    def type_sig(self) -> str:
+        fieldtype = self.fieldtype.lower()
+        if fieldtype in ["int", "number"]:
+            return "NUMBER(10)"
+        elif fieldtype == "string":
+            return "VARCHAR(4000)"
+        elif fieldtype == "date":
+            return "DATE"
+        return fieldtype
+
 class Table(object):
     fields: List[Field] = []
     def __init__(self, name: str):
         self.name = name
         self.parent = None
         self.fields = []
+
+    @property
+    def pkey_field(self):
+        for field in self.fields:
+            if field.primary_key: return field
+        return None
+
+    @property
+    def fqn(self) -> str:
+        table_name = ""
+        curr = self 
+        while curr:
+            if table_name: table_name = curr.name + "_" + table_name 
+            else: table_name = curr.name
+            curr = curr.parent
+        return table_name
 
     def has_field(self, name: str) -> bool:
         for f in self.fields:
@@ -82,24 +101,25 @@ class SchemaLib(object):
         field.fieldtype = fieldtype
 
     def gen_ddl(self, table: Table) -> str: 
-        table_name = ""
-        curr = table
-        while curr:
-            if table_name: table_name = curr.name + "_" + table_name 
-            else: table_name = curr.name
-            curr = curr.parent
+        table_name = table.fqn
         def field_desc(field: Field) -> str:
             out = field.name
-            if field.fieldtype == "int":
-                out += " NUMBER(10) "
-            elif field.fieldtype == "string":
-                out += " VARCHAR(4000) "
-            elif field.fieldtype == "date":
-                out += " DATE "
+            out += " " + field.type_sig
+            """
+            CREATE TABLE Department_Employee_Child (
+                childName VARCHAR(4000),
+                dob DATE,
+                childId NUMBER(10) PRIMARY KEY,
+                Child_pk FOREIGN KEY Department_Employee_Child_fk REFERENCES Department_Employee (childId)  )
+            """
             if field.primary_key:
-                out += f"PRIMARY KEY {table.name}_pk"
+                out += f" PRIMARY KEY {table.name}_pk"
             return out
         field_descriptors = list(map(field_desc, table.fields))
+        if table.parent:
+            parentPKField = table.parent.pkey_field
+            desc = f" {parentPKField.name} {parentPKField.type_sig} FOREIGN KEY {table_name}_fk REFERENCES {table.parent.fqn} ({parentPKField.name}) "
+            field_descriptors.append(desc)
 
         return f"""
         CREATE TABLE {table_name} ( { ", ".join(field_descriptors) } )
